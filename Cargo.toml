@@ -1,0 +1,18 @@
+[package]
+name = "pausable_future"
+version = "0.1.0"
+authors = ["xuxiaocheng <2762267080@qq.com>"]
+edition = "2021"
+description = "Pausable and resumable future, useful in background tasks."
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/xuxiaocheng0201/pausable_future/"
+documentation = "https://docs.rs/pausable_future/"
+categories = ["asynchronous"]
+keywords = ["future", "async", "pause", "pausable"]
+
+[dependencies]
+pin-project-lite = "~0.2"
+
+[badges]
+maintenance = { status = "passively-maintained" }
