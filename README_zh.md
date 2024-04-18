@@ -32,7 +32,7 @@ use pausable_future::Pausable;
 use tokio::time::sleep;
 
 #[tokio::main]
-fn main() {
+async fn main() {
     let pausable = Pausable::new(async {
         let mut count = 0;
         loop {
