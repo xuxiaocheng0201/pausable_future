@@ -60,6 +60,12 @@ impl<F: Future> Pausable<F> {
 }
 
 impl Controller {
+    /// Is the future paused?
+    pub fn is_paused(&self) -> bool {
+        let me = self.0.lock().unwrap_or_else(|e| e.into_inner());
+        me.paused
+    }
+
     /// Pause the future.
     pub fn pause(&self) {
         let mut me = self.0.lock().unwrap_or_else(|e| e.into_inner());
