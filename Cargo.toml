@@ -14,5 +14,8 @@ keywords = ["future", "async", "pause", "pausable"]
 [dependencies]
 pin-project-lite = "~0.2"
 
+[dev-dependencies]
+tokio = { version = "^1", features = ["macros", "time"] }
+
 [badges]
 maintenance = { status = "passively-maintained" }

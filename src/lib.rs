@@ -1,3 +1,6 @@
+#![doc = include_str!("../README.md")]
+#[forbid(unsafe_code)]
+#[warn(missing_docs)]
 
 use std::future::Future;
 use std::pin::Pin;
@@ -16,6 +19,7 @@ pin_project! {
 }
 
 #[derive(Debug, Clone)]
+/// The controller of a `Pausable` future.
 pub struct Controller(Arc<Mutex<ControllerInner>>);
 
 #[derive(Debug)]
