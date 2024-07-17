@@ -1,7 +1,6 @@
 #![doc = include_str!("../README.md")]
 #[forbid(unsafe_code)]
 #[warn(missing_docs)]
-
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
@@ -41,7 +40,7 @@ impl<F: Future> Future for Pausable<F> {
     }
 }
 
-impl<F: Future> Pausable<F> {
+impl<F> Pausable<F> {
     /// Create a new `Pausable` future.
     pub fn new(future: F) -> Self {
         Self {
@@ -78,6 +77,26 @@ impl Controller {
         me.paused = false;
         if let Some(cx) = me.cx.take() {
             cx.wake();
+        }
+    }
+}
+
+#[cfg(feature = "stream")]
+mod __stream {
+    use futures::Stream;
+
+    use super::*;
+
+    impl<S: Stream> Stream for Pausable<S> {
+        type Item = S::Item;
+
+        fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+            let me = self.project();
+            let mut inner = (*me.inner).0.lock().unwrap_or_else(|e| e.into_inner());
+            if !inner.paused { return me.future.poll_next(cx); }
+            let cx = cx.waker().clone();
+            inner.cx.replace(cx);
+            Poll::Pending
         }
     }
 }
