@@ -1,6 +1,6 @@
 [package]
 name = "pausable_future"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["xuxiaocheng <2762267080@qq.com>"]
 edition = "2021"
 description = "Pausable and resumable future, useful in background tasks."
@@ -11,7 +11,11 @@ documentation = "https://docs.rs/pausable_future/"
 categories = ["asynchronous"]
 keywords = ["future", "async", "pause", "pausable"]
 
+[features]
+stream = ["futures"]
+
 [dependencies]
+futures = { version = "~0.3", default-features = false, optional = true }
 pin-project-lite = "~0.2"
 
 [dev-dependencies]
