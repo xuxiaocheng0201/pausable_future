@@ -10,20 +10,20 @@ use std::task::{Context, Poll, Waker};
 use pin_project_lite::pin_project;
 
 pin_project! {
-    /// A future that can be paused and resumed.
+    /// A future or a stream that can be paused and resumed.
     pub struct Pausable<F> {
         #[pin]
-        future: F,
-        inner: Controller,
+        inner: F,
+        controller: Controller,
     }
 }
 
-impl<F> Pausable<F> {
-    /// Create a new `Pausable` future.
-    pub fn new(future: F) -> Self {
+impl<I> Pausable<I> {
+    /// Create a new `Pausable` future/stream.
+    pub fn new(inner: I) -> Self {
         Self {
-            future,
-            inner: Controller(Arc::new(Mutex::new(ControllerInner {
+            inner,
+            controller: Controller(Arc::new(Mutex::new(ControllerInner {
                 paused: false,
                 cx: None
             }))),
@@ -32,7 +32,7 @@ impl<F> Pausable<F> {
 
     /// Get the controller.
     pub fn controller(&self) -> Controller {
-        self.inner.clone()
+        self.controller.clone()
     }
 }
 
@@ -78,8 +78,8 @@ impl<F: Future> Future for Pausable<F> {
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let me = self.project();
-        let mut inner = (*me.inner).0.lock().unwrap_or_else(|e| e.into_inner());
-        if !inner.paused { return me.future.poll(cx); }
+        let mut inner = (*me.controller).inner();
+        if !inner.paused { return me.inner.poll(cx); }
         let cx = cx.waker().clone();
         inner.cx.replace(cx);
         Poll::Pending
@@ -92,8 +92,8 @@ impl<S: futures::Stream> futures::Stream for Pausable<S> {
 
     fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
         let me = self.project();
-        let mut inner = (*me.inner).inner();
-        if !inner.paused { return me.future.poll_next(cx); }
+        let mut inner = (*me.controller).inner();
+        if !inner.paused { return me.inner.poll_next(cx); }
         let cx = cx.waker().clone();
         inner.cx.replace(cx);
         Poll::Pending
