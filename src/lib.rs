@@ -37,7 +37,7 @@ impl<I> Pausable<I> {
 }
 
 #[derive(Debug, Clone)]
-/// The controller of a `Pausable` future.
+/// The controller of a `Pausable` future/stream.
 pub struct Controller(Arc<Mutex<ControllerInner>>);
 
 #[derive(Debug)]
@@ -51,17 +51,17 @@ impl Controller {
         self.0.lock().unwrap_or_else(|e| e.into_inner())
     }
 
-    /// Is the future paused?
+    /// Is the future/stream paused?
     pub fn is_paused(&self) -> bool {
         self.inner().paused
     }
 
-    /// Pause the future.
+    /// Pause the future/stream.
     pub fn pause(&self) {
         self.inner().paused = true;
     }
 
-    /// Resume the future.
+    /// Resume the future/stream.
     pub fn resume(&self) {
         let mut me = self.inner();
         me.paused = false;
