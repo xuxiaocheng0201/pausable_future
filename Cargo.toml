@@ -1,6 +1,6 @@
 [package]
 name = "pausable_future"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["xuxiaocheng <2762267080@qq.com>"]
 edition = "2021"
 description = "Pausable and resumable future, useful in background tasks."
@@ -10,6 +10,7 @@ repository = "https://github.com/xuxiaocheng0201/pausable_future/"
 documentation = "https://docs.rs/pausable_future/"
 categories = ["asynchronous"]
 keywords = ["future", "async", "pause", "pausable"]
+include = ["Cargo.toml", "src", "README.md", "LICENSE"]
 
 [features]
 stream = ["dep:futures"]
@@ -18,7 +19,7 @@ stream = ["dep:futures"]
 pin-project-lite = "~0.2"
 futures = { version = "~0.3", default-features = false, optional = true }
 
-[dev-dependencies] # for doc test
+[dev-dependencies]
 tokio = { version = "^1", features = ["macros", "rt-multi-thread", "time"] }
 
 [badges]

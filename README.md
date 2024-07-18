@@ -19,7 +19,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-pausable_future = "~0.1"
+pausable_future = "~0.2"
 ```
 
 

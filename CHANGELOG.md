@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2024-7-18
+
+### Added
+
+* 添加对于 futures::Stream 的支持
+
 ## [0.1.0] - 2024-4-18
 
 ### Added
