@@ -53,14 +53,12 @@ impl Controller {
 
     /// Is the future paused?
     pub fn is_paused(&self) -> bool {
-        let me = self.inner();
-        me.paused
+        self.inner().paused
     }
 
     /// Pause the future.
     pub fn pause(&self) {
-        let mut me = self.inner();
-        me.paused = true;
+        self.inner().paused = true;
     }
 
     /// Resume the future.
@@ -78,10 +76,13 @@ impl<F: Future> Future for Pausable<F> {
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let me = self.project();
-        let mut inner = (*me.controller).inner();
-        if !inner.paused { return me.inner.poll(cx); }
+        let mut controller = me.controller.inner();
+        if !controller.paused {
+            drop(controller);
+            return me.inner.poll(cx);
+        }
         let cx = cx.waker().clone();
-        inner.cx.replace(cx);
+        controller.cx.replace(cx);
         Poll::Pending
     }
 }
@@ -92,10 +93,13 @@ impl<S: futures::Stream> futures::Stream for Pausable<S> {
 
     fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
         let me = self.project();
-        let mut inner = (*me.controller).inner();
-        if !inner.paused { return me.inner.poll_next(cx); }
+        let mut controller = me.controller.inner();
+        if !controller.paused {
+            drop(controller);
+            return me.inner.poll_next(cx);
+        }
         let cx = cx.waker().clone();
-        inner.cx.replace(cx);
+        controller.cx.replace(cx);
         Poll::Pending
     }
 }
