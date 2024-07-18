@@ -18,5 +18,8 @@ stream = ["dep:futures"]
 pin-project-lite = "~0.2"
 futures = { version = "~0.3", default-features = false, optional = true }
 
+[dev-dependencies] # for doc test
+tokio = { version = "^1", features = ["macros", "rt-multi-thread", "time"] }
+
 [badges]
 maintenance = { status = "passively-maintained" }

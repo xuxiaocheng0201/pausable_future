@@ -10,7 +10,7 @@
 
 # Description
 
-Pausable and resumable future, useful in background tasks.
+Pausable and resumable future/stream, useful in background tasks.
 
 
 # Usage
